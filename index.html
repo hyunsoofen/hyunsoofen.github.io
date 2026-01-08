@@ -3,78 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hyunsoo Park | Personal Homepage</title>
+    <title>Hyunsoo Park | AI & Robotics Insights</title>
+    <!-- Google Fonts: Inter & Noto Sans KR -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        /* 기본 스타일 초기화 */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; }
-        a { text-decoration: none; color: inherit; }
+        :root {
+            --primary: #0f172a;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+        }
 
-        /* 레이아웃 */
-        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-        
-        /* 헤더 섹션 */
-        header { text-align: center; padding: 60px 0; background: #fff; border-bottom: 1px solid #eee; }
-        header h1 { font-size: 2.5rem; color: #1a1a1a; margin-bottom: 10px; }
-        header p { font-size: 1.1rem; color: #666; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* 메인 콘텐츠 */
-        section { margin: 40px 0; padding: 20px; background: #fff; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        h2 { font-size: 1.5rem; margin-bottom: 20px; color: #007AFF; border-bottom: 2px solid #007AFF; display: inline-block; }
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.7;
+        }
 
-        .about p { margin-bottom: 15px; }
-        
-        .skills ul { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
-        .skills li { background: #eef5ff; color: #007AFF; padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; }
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e2e8f0;
+        }
 
-        .contact { text-align: center; }
-        .contact a { display: inline-block; margin: 10px; padding: 10px 20px; background: #333; color: #fff; border-radius: 8px; transition: 0.3s; }
-        .contact a:hover { background: #007AFF; }
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        /* 푸터 */
-        footer { text-align: center; padding: 40px 0; color: #999; font-size: 0.9rem; }
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 160px 2rem 100px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #94a3b8;
+        }
+
+        /* Content Sections */
+        .section-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 4px;
+            background: var(--secondary);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        /* Grid Layout for Trends */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .card p {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: var(--secondary);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Strategy Section */
+        .strategy-list {
+            list-style: none;
+        }
+
+        .strategy-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 16px;
+            align-items: center;
+        }
+
+        .company-logo {
+            min-width: 100px;
+            height: 100px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #334155;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: #94a3b8;
+            padding: 60px 2rem;
+            text-align: center;
+        }
+
+        footer p { margin-bottom: 10px; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .strategy-item { flex-direction: column; text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-    <header>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">HYUNSOO PARK</div>
+            <div class="nav-links">
+                <a href="#ai">AI Trend</a>
+                <a href="#robotics">Robotics</a>
+                <a href="#strategy">Strategy</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
         <div class="container">
-            <h1>Hyunsoo Park</h1>
-            <p>안녕하세요, 끊임없이 배우고 성장하는 박현수입니다.</p>
+            <h1>Next Era of Technology</h1>
+            <p>AI와 로보틱스가 재정의하는 비즈니스의 미래,<br>글로벌 기술 기업의 전략적 움직임을 분석합니다.</p>
         </div>
     </header>
 
-    <div class="container">
-        <section class="about">
-            <h2>About Me</h2>
-            <p>👋 안녕하세요! 저의 개인 공간에 오신 것을 환영합니다.</p>
-            <p>저는 새로운 기술을 익히고 문제를 해결하는 과정에서 즐거움을 느낍니다. 현재 [본인의 관심 분야나 직업을 입력하세요]에 집중하고 있습니다.</p>
-        </section>
-
-        <section class="skills">
-            <h2>Skills</h2>
-            <ul>
-                <li>HTML / CSS</li>
-                <li>JavaScript</li>
-                <li>React</li>
-                <li>Python</li>
-                <li>Git</li>
-            </ul>
-        </section>
-
-        <section class="contact">
-            <h2>Contact</h2>
-            <p>함께 이야기 나누고 싶다면 언제든 연락주세요!</p>
-            <div style="margin-top: 20px;">
-                <a href="mailto:your-email@example.com">Email 보내기</a>
-                <a href="https://github.com" target="_blank">GitHub</a>
+    <main class="container">
+        
+        <!-- AI 트랜드 섹션 -->
+        <section id="ai" class="section-container">
+            <h2 class="section-title">New AI Trends</h2>
+            <div class="grid">
+                <div class="card">
+                    <span class="tag">Generative AI</span>
+                    <div class="icon-box">🧠</div>
+                    <h3>멀티모달 모델의 진화</h3>
+                    <p>텍스트를 넘어 이미지, 영상, 오디오를 동시에 이해하고 생성하는 GPT-4o, Gemini 등 멀티모달 AI가 표준이 되고 있습니다.</p>
+                </div>
+                <div class="card">
+                    <span class="tag">On-Device AI</span>
+                    <div class="icon-box">📱</div>
+                    <h3>온디바이스 AI 시대</h3>
+                    <p>클라우드 연결 없이 기기 자체에서 고성능 연산을 처리하는 기술이 스마트폰과 PC 시장의 판도를 바꾸고 있습니다.</p>
+                </div>
+                <div class="card">
+                    <span class="tag">Agentic AI</span>
+                    <div class="icon-box">🤖</div>
+                    <h3>AI 에이전트의 부상</h3>
+                    <p>단순 답변을 넘어 사용자의 목표를 달성하기 위해 스스로 계획을 세우고 실행하는 자율형 에이전트 기술이 확산 중입니다.</p>
+                </div>
             </div>
         </section>
-    </div>
 
-    <footer>
-        <p>&copy; 2026 Hyunsoo Park. All rights reserved.</p>
+        <!-- 로봇 트랜드 섹션 -->
+        <section id="robotics" class="section-container" style="background: #f1f5f9; border-radius: 30px;">
+            <h2 class="section-title">Robotics Innovation</h2>
+            <div class="grid">
+                <div class="card">
+                    <span class="tag">Humanoid</span>
+                    <div class="icon-box">🦾</div>
+                    <h3>휴머노이드 로봇의 상용화</h3>
+                    <p>Tesla의 Optimus, Figure AI 등 인간의 형태를 닮은 범용 로봇들이 공장과 물류 현장에 투입되기 시작했습니다.</p>
+                </div>
+                <div class="card">
+                    <span class="tag">Foundation Models</span>
+                    <div class="icon-box">🌐</div>
+                    <h3>로봇 파운데이션 모델</h3>
+                    <p>대규모 데이터를 통해 로봇이 물리적 세계를 학습하도록 하는 VLA(Vision-Language-Action) 모델이 로봇의 지능을 높이고 있습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 기술 기업 전략 섹션 -->
+        <section id="strategy" class="section-container">
+            <h2 class="section-title">Big Tech Strategy</h2>
+            <div class="strategy-list">
+                <div class="strategy-item">
+                    <div class="company-logo">NVIDIA</div>
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem;">풀스택 AI 인프라 장악</h3>
+                        <p>단순히 GPU 판매를 넘어, AI 팩토리와 로봇 시뮬레이션 플랫폼(Isaac)을 통해 생태계 전체를 지배하려는 전략을 취하고 있습니다.</p>
+                    </div>
+                </div>
+                <div class="strategy-item">
+                    <div class="company-logo">OpenAI</div>
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem;">수직 계열화 및 플랫폼화</h3>
+                        <p>모델 고도화와 동시에 자체 칩 생산 검토 및 검색 시장 진출을 통해 독자적인 플랫폼 생태계를 구축하고 있습니다.</p>
+                    </div>
+                </div>
+                <div class="strategy-item">
+                    <div class="company-logo">Tesla</div>
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem;">Physical AI의 선두주자</h3>
+                        <p>FSD(자율주행) 데이터를 로봇에 이식하여, 현실 세계에서 움직이는 모든 소프트웨어와 하드웨어를 수직 통합하고 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contact">
+        <div class="container">
+            <p><strong>Hyunsoo Park</strong> | Technology Enthusiast & Strategy Analyst</p>
+            <p>이메일: park.hyunsoo@example.com</p>
+            <p style="margin-top: 20px; font-size: 0.8rem;">&copy; 2026 Hyunsoo Park. All rights reserved.</p>
+        </div>
     </footer>
 
+    <script>
+        // 부드러운 스크롤 효과
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
