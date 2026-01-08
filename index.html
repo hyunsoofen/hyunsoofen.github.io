@@ -145,12 +145,11 @@
         /* Card Styles */
         .card {
             background: var(--white);
-            padding: 2rem;
             border-radius: 20px;
             border: 1px solid #e2e8f0;
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
@@ -161,8 +160,39 @@
             border-color: var(--secondary);
         }
 
+        .card-media {
+            width: 100%;
+            height: 180px;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pdf-overlay {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
         .category-badge {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-weight: 800;
@@ -170,20 +200,8 @@
             margin-bottom: 0.5rem;
         }
 
-        .icon-box {
-            width: 44px;
-            height: 44px;
-            background: #f1f5f9;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.2rem;
-            font-size: 1.4rem;
-        }
-
         .card h3 {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             margin-bottom: 0.8rem;
             color: var(--primary);
             line-height: 1.4;
@@ -191,7 +209,7 @@
 
         .card p {
             color: var(--text-light);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             margin-bottom: 1.5rem;
             flex-grow: 1;
         }
@@ -210,13 +228,13 @@
             color: var(--text-light);
             padding: 3px 10px;
             border-radius: 5px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 500;
         }
 
         /* Edit Form Styles */
         .edit-container {
-            max-width: 700px;
+            max-width: 750px;
             margin: 120px auto 60px;
             padding: 40px;
             background: var(--white);
@@ -255,6 +273,37 @@
             border-radius: 10px;
             font-family: inherit;
             font-size: 0.95rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: var(--secondary);
+            background: #f1f5f9;
+        }
+
+        .file-preview-area {
+            margin-top: 15px;
+            width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .file-preview-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .btn {
@@ -300,7 +349,7 @@
     <div id="view-home" class="view active">
         <header class="hero">
             <h1>Technology Insights</h1>
-            <p>AI, 로보틱스, 그리고 글로벌 기술 기업의 전략적 흐름을 한눈에 확인하세요.</p>
+            <p>AI, 로보틱스, 그리고 글로벌 기술 기업의 전략적 흐름을 시각적으로 분석합니다.</p>
         </header>
 
         <div class="controls-container">
@@ -340,14 +389,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="edit-icon">Icon (Emoji)</label>
-                        <input type="text" id="edit-icon" placeholder="예: 🧠, 🤖, 📈">
+                        <label for="edit-tag">Tag (Short Label)</label>
+                        <input type="text" id="edit-tag" placeholder="예: Generative AI">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit-tag">Tag (Short Label)</label>
-                    <input type="text" id="edit-tag" placeholder="예: Generative AI, Humanoid">
                 </div>
 
                 <div class="form-group">
@@ -357,7 +401,19 @@
 
                 <div class="form-group">
                     <label for="edit-desc">Description</label>
-                    <textarea id="edit-desc" rows="5" placeholder="상세 내용 분석"></textarea>
+                    <textarea id="edit-desc" rows="4" placeholder="상세 내용 분석"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Media Attachment (Image or PDF)</label>
+                    <div class="file-input-wrapper" onclick="document.getElementById('file-input').click()">
+                        <p id="file-status-text">Click to upload Image or PDF</p>
+                        <input type="file" id="file-input" style="display: none;" accept="image/*,application/pdf" onchange="handleFileSelect(event)">
+                        <div id="file-preview-area" class="file-preview-area">
+                            <img id="preview-img" src="" alt="Preview">
+                        </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--text-light); margin-top: 8px;">* PDF 선택 시 아이콘으로 표시됩니다.</p>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
@@ -375,22 +431,50 @@
     </footer>
 
     <script>
-        // 초기 통합 데이터
+        // 초기 데이터 (샘플 이미지 URL 포함 가능)
         let contentsData = [
-            { id: 1, category: "AI", icon: "🧠", tag: "Generative AI", title: "멀티모달 모델의 진화", desc: "텍스트를 넘어 이미지, 영상, 오디오를 동시에 이해하고 생성하는 GPT-4o, Gemini 등 멀티모달 AI가 표준이 되고 있습니다." },
-            { id: 2, category: "AI", icon: "📱", tag: "On-Device AI", title: "온디바이스 AI 시대", desc: "클라우드 연결 없이 기기 자체에서 고성능 연산을 처리하는 기술이 스마트폰과 PC 시장의 판도를 바꾸고 있습니다." },
-            { id: 3, category: "Robotics", icon: "🦾", tag: "Humanoid", title: "휴머노이드 로봇의 상용화", desc: "Tesla의 Optimus, Figure AI 등 인간의 형태를 닮은 범용 로봇들이 공장과 물류 현장에 투입되기 시작했습니다." },
-            { id: 4, category: "Strategy", icon: "📈", tag: "NVIDIA", title: "풀스택 AI 인프라 장악", desc: "단순히 GPU 판매를 넘어, AI 팩토리와 로봇 시뮬레이션 플랫폼을 통해 생태계 전체를 지배하려는 전략입니다." },
-            { id: 5, category: "Strategy", icon: "🏢", tag: "OpenAI", title: "수직 계열화 및 플랫폼화", desc: "모델 고도화와 동시에 자체 칩 생산 검토 및 검색 시장 진출을 통해 독자적인 플랫폼 생태계를 구축하고 있습니다." }
+            { id: 1, category: "AI", tag: "Generative AI", title: "멀티모달 모델의 진화", desc: "텍스트를 넘어 이미지, 영상, 오디오를 동시에 이해하고 생성하는 모델이 표준이 되고 있습니다.", fileData: "", fileType: "" },
+            { id: 2, category: "AI", tag: "On-Device AI", title: "온디바이스 AI 시대", desc: "클라우드 연결 없이 기기 자체에서 고성능 연산을 처리하는 기술이 확산 중입니다.", fileData: "", fileType: "" },
+            { id: 3, category: "Robotics", tag: "Humanoid", title: "휴머노이드 로봇의 상용화", desc: "Tesla의 Optimus 등 인간 형태 로봇들이 실제 공장 현장에 투입되기 시작했습니다.", fileData: "", fileType: "" },
+            { id: 4, category: "Strategy", tag: "NVIDIA", title: "풀스택 AI 인프라 장악", desc: "GPU 판매를 넘어 로봇 시뮬레이션 플랫폼까지 아우르는 생태계를 구축하고 있습니다.", fileData: "", fileType: "" }
         ];
 
         let currentFilter = 'All';
+        let currentFileData = "";
+        let currentFileType = "";
 
         // 뷰 전환
         function showView(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(`view-${viewName}`).classList.add('active');
             window.scrollTo(0, 0);
+        }
+
+        // 파일 선택 처리
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            currentFileType = file.type;
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                currentFileData = e.target.result;
+                const previewImg = document.getElementById('preview-img');
+                const previewArea = document.getElementById('file-preview-area');
+                const statusText = document.getElementById('file-status-text');
+
+                if (currentFileType.startsWith('image/')) {
+                    previewImg.src = currentFileData;
+                    previewArea.style.display = 'block';
+                    statusText.innerText = `Selected: ${file.name}`;
+                } else if (currentFileType === 'application/pdf') {
+                    previewArea.style.display = 'none';
+                    statusText.innerText = `PDF Selected: ${file.name}`;
+                }
+            };
+
+            reader.readAsDataURL(file);
         }
 
         // 데이터 렌더링
@@ -406,13 +490,27 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openEditMode(item.id);
+                
+                // 미디어 영역 생성
+                let mediaHtml = '';
+                if (item.fileData && item.fileType.startsWith('image/')) {
+                    mediaHtml = `<div class="card-media"><img src="${item.fileData}" alt="Content"></div>`;
+                } else if (item.fileData && item.fileType === 'application/pdf') {
+                    mediaHtml = `<div class="card-media"><div class="pdf-overlay">📄 <span style="font-size:0.8rem; margin-top:5px;">PDF Attached</span></div></div>`;
+                } else {
+                    mediaHtml = `<div class="card-media"><span style="color:#cbd5e1; font-size:2rem;">✨</span></div>`;
+                }
+
                 card.innerHTML = `
-                    <div class="category-badge">${item.category}</div>
-                    <div class="icon-box">${item.icon}</div>
-                    <h3>${item.title}</h3>
-                    <p>${item.desc}</p>
-                    <div class="card-footer">
-                        <span class="tag"># ${item.tag}</span>
+                    ${mediaHtml}
+                    <div class="card-content">
+                        <div class="category-badge">${item.category}</div>
+                        <h3>${item.title}</h3>
+                        <p>${item.desc}</p>
+                        <div class="card-footer">
+                            <span class="tag"># ${item.tag}</span>
+                            ${item.fileData ? '<span style="font-size:0.7rem; color:var(--secondary);">📎 File</span>' : ''}
+                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -434,6 +532,10 @@
             document.getElementById('edit-id-display').innerText = "New Content";
             document.getElementById('edit-id').value = "";
             document.getElementById('edit-form').reset();
+            currentFileData = "";
+            currentFileType = "";
+            document.getElementById('file-preview-area').style.display = 'none';
+            document.getElementById('file-status-text').innerText = "Click to upload Image or PDF";
             document.getElementById('delete-btn').style.display = "none";
             showView('edit');
         }
@@ -447,25 +549,44 @@
             document.getElementById('edit-id-display').innerText = `ID: ${item.id}`;
             document.getElementById('edit-id').value = item.id;
             document.getElementById('edit-category').value = item.category;
-            document.getElementById('edit-icon').value = item.icon;
             document.getElementById('edit-tag').value = item.tag;
             document.getElementById('edit-title').value = item.title;
             document.getElementById('edit-desc').value = item.desc;
             
+            // 기존 파일 정보 로드
+            currentFileData = item.fileData || "";
+            currentFileType = item.fileType || "";
+            
+            const previewArea = document.getElementById('file-preview-area');
+            const statusText = document.getElementById('file-status-text');
+            
+            if (currentFileData && currentFileType.startsWith('image/')) {
+                document.getElementById('preview-img').src = currentFileData;
+                previewArea.style.display = 'block';
+                statusText.innerText = "Current: Image Attached";
+            } else if (currentFileData && currentFileType === 'application/pdf') {
+                previewArea.style.display = 'none';
+                statusText.innerText = "Current: PDF Attached";
+            } else {
+                previewArea.style.display = 'none';
+                statusText.innerText = "Click to upload Image or PDF";
+            }
+
             document.getElementById('delete-btn').style.display = "block";
             showView('edit');
         }
 
-        // 저장 (추가 및 수정 통합)
+        // 저장
         function saveChanges() {
             const idVal = document.getElementById('edit-id').value;
             const newData = {
                 id: idVal ? parseInt(idVal) : Date.now(),
                 category: document.getElementById('edit-category').value,
-                icon: document.getElementById('edit-icon').value || "✨",
                 tag: document.getElementById('edit-tag').value,
                 title: document.getElementById('edit-title').value,
-                desc: document.getElementById('edit-desc').value
+                desc: document.getElementById('edit-desc').value,
+                fileData: currentFileData,
+                fileType: currentFileType
             };
 
             if (!newData.title || !newData.desc) {
@@ -474,11 +595,9 @@
             }
 
             if (idVal) {
-                // 수정
                 const idx = contentsData.findIndex(d => d.id === parseInt(idVal));
                 contentsData[idx] = newData;
             } else {
-                // 신규 추가
                 contentsData.unshift(newData);
             }
 
@@ -489,7 +608,7 @@
         // 삭제
         function deleteContent() {
             const id = parseInt(document.getElementById('edit-id').value);
-            if (confirm("정말로 이 인사이트를 삭제하시겠습니까?")) {
+            if (confirm("정말로 삭제하시겠습니까?")) {
                 contentsData = contentsData.filter(d => d.id !== id);
                 renderContents();
                 showView('home');
